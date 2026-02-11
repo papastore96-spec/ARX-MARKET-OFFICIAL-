@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Testimoni ARX MARKET</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  padding:20px;
+  font-family:Arial, sans-serif;
+  background:#ffffff;
+  color:#000000;
+}
+
+h1{
+  text-align:center;
+}
+
+.brand{
+  text-align:center;
+  font-weight:bold;
+  color:#0066ff;
+  margin-bottom:20px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  background:#0066ff;
+  color:white;
+  border:none;
+  border-radius:6px;
+  font-weight:bold;
+}
+
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+
+.card{
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:12px;
+  margin-top:12px;
+}
+
+img{
+  width:100%;
+  margin-top:8px;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>TESTIMONI</h1>
+<div class="brand">ARX MARKET 🚀</div>
+
+<button onclick="loginAdmin()">LOGIN ADMIN</button>
+
+<div id="form" style="display:none">
+  <input id="nama" placeholder="Nama">
+  <input id="produk" placeholder="Produk">
+  <textarea id="pesan" placeholder="Isi testimoni"></textarea>
+  <input type="file" id="foto" accept="image/*">
+  <button onclick="tambah()">TAMBAH</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+const password = "arx123";
+let data = JSON.parse(localStorage.getItem("arx_testi")) || [];
+
+function loginAdmin(){
+  let p = prompt("Password admin:");
+  if(p === password){
+    document.getElementById("form").style.display = "block";
+    alert("Login berhasil");
+  }else{
+    alert("Password salah");
+  }
+}
+
+function tambah(){
+  let nama = document.getElementById("nama").value;
+  let produk = document.getElementById("produk").value;
+  let pesan = document.getElementById("pesan").value;
+  let foto = document.getElementById("foto").files[0];
+
+  if(!nama || !produk || !pesan){
+    alert("Lengkapi data");
+    return;
+  }
+
+  let reader = new FileReader();
+  reader.onload = function(){
+    data.push({
+      nama, produk, pesan,
+      foto: reader.result
+    });
+    localStorage.setItem("arx_testi", JSON.stringify(data));
+    tampil();
+  };
+
+  if(foto){
+    reader.readAsDataURL(foto);
+  }else{
+    data.push({nama, produk, pesan, foto:""});
+    localStorage.setItem("arx_testi", JSON.stringify(data));
+    tampil();
+  }
+}
+
+function tampil(){
+  let html = "";
+  data.slice().reverse().forEach(d=>{
+    html += `
+      <div class="card">
+        <b>${d.nama}</b><br>
+        <small>${d.produk}</small><br><br>
+        ${d.pesan}
+        ${d.foto ? `<img src="${d.foto}">` : ""}
+      </div>
+    `;
+  });
+  document.getElementById("list").innerHTML = html;
+}
+
+tampil();
+</script>
+
+</body>
+</html>
