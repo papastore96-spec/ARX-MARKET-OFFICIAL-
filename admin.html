@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin ARX MARKET</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#111;
+  color:#fff;
+  padding:20px;
+}
+input, textarea, button{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:6px;
+  border:none;
+}
+button{
+  background:#0066ff;
+  color:white;
+  font-weight:bold;
+}
+.card{
+  background:#1e1e1e;
+  padding:12px;
+  border-radius:8px;
+  margin-top:10px;
+}
+img{width:100%;border-radius:6px;margin-top:8px}
+</style>
+</head>
+
+<body>
+
+<h2>ADMIN ARX MARKET 🚀</h2>
+
+<div id="login">
+  <input id="pass" type="password" placeholder="Password Admin">
+  <button onclick="login()">LOGIN</button>
+</div>
+
+<div id="panel" style="display:none">
+  <input id="nama" placeholder="Nama">
+  <input id="produk" placeholder="Produk">
+  <textarea id="pesan" placeholder="Isi Testimoni"></textarea>
+  <input type="file" id="foto" accept="image/*">
+  <button onclick="tambah()">TAMBAH TESTIMONI</button>
+  <div id="list"></div>
+</div>
+
+<script>
+const PASSWORD="arx123";
+let data=JSON.parse(localStorage.getItem("arx_testi"))||[];
+
+function login(){
+  if(document.getElementById("pass").value===PASSWORD){
+    document.getElementById("login").style.display="none";
+    document.getElementById("panel").style.display="block";
+    tampil();
+  }else alert("Password salah");
+}
+
+function tambah(){
+  let r=new FileReader();
+  let f=document.getElementById("foto").files[0];
+  r.onload=()=>{
+    data.push({
+      nama:nama.value,
+      produk:produk.value,
+      pesan:pesan.value,
+      foto:r.result
+    });
+    localStorage.setItem("arx_testi",JSON.stringify(data));
+    tampil();
+  };
+  f?r.readAsDataURL(f):r.onload();
+}
+
+function hapus(i){
+  if(confirm("Hapus testimoni?")){
+    data.splice(i,1);
+    localStorage.setItem("arx_testi",JSON.stringify(data));
+    tampil();
+  }
+}
+
+function tampil(){
+  list.innerHTML="";
+  data.forEach((d,i)=>{
+    list.innerHTML+=`
+      <div class="card">
+        <b>${d.nama}</b><br>
+        ${d.produk}<br><br>
+        ${d.pesan}
+        ${d.foto?`<img src="${d.foto}">`:""}
+        <button onclick="hapus(${i})">HAPUS</button>
+      </div>`;
+  });
+}
+</script>
+
+</body>
+</html>
